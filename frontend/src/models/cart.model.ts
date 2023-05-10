@@ -1,11 +1,12 @@
-type Item = {
+export type CartItem = {
+  productId: string;
   productImg: string;
   productName: string;
   productPrice: number;
   productQuantity: number;
 };
 
-interface Cart {
+export interface Cart {
   userId: string;
   name: string;
   phone: string;
@@ -13,11 +14,13 @@ interface Cart {
   totalPrice: number;
   discount: number;
   unitPrice: string;
-  payment_method: string;
+  paymentMethod: string;
   shippingAddress: string;
   createdAt: string;
   status: "Pending" | "Processing" | "Delivered" | "Cancelled";
-  items: Array<Item>;
+  items: {
+    [productId: string]: CartItem;
+  };
 }
 
 export default Cart;
