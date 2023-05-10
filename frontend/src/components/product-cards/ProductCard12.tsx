@@ -181,7 +181,9 @@ const ProductCard12: FC<ProductCard12Props> = (props) => {
               variant="outlined"
               borderColor="primary.light"
               className="addCartButton"
-              onClick={handleCartAmountChange(cartItem?.qty ? cartItem?.qty - 1 : 1)}
+              onClick={handleCartAmountChange(
+                cartItem?.qty ? cartItem?.qty - 1 : 1
+              )}
             >
               {cartItem?.qty ? (
                 <>

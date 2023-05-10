@@ -9,35 +9,30 @@ import TextField from "@component/text-field";
 import Typography from "@component/Typography";
 import { ProductCard7 } from "@component/product-cards";
 import CheckoutNavLayout from "@component/layout/CheckoutNavLayout";
-import { useAppContext } from "@context/AppContext";
 import { currency } from "@utils/utils";
 
-const Cart = () => {
-  const { state } = useAppContext();
+// Redux
+import { useSelector } from "react-redux";
+import { RootState } from "store";
+import { CartState } from "store/cart";
 
-  const getTotalPrice = () => {
-    return (
-      state.cart.reduce(
-        (accumulator, item) => accumulator + item.price * item.qty,
-        0
-      ) || 0
-    );
-  };
+const Cart = () => {
+  const cartState: CartState = useSelector((state: RootState) => state.cart);
 
   return (
     <Fragment>
       <Grid container spacing={6}>
         <Grid item lg={8} md={8} xs={12}>
-          {state.cart.map((item) => (
+          {Object.keys(cartState.items).map((productId, idx) => (
             <ProductCard7
               mb="1.5rem"
-              id={item.id}
-              key={item.id}
-              qty={item.qty}
-              slug={item.slug}
-              name={item.name}
-              price={item.price}
-              imgUrl={item.imgUrl}
+              id={productId}
+              key={idx}
+              qty={cartState.items[productId].productQuantity}
+              slug={productId}
+              name={cartState.items[productId].productName}
+              price={cartState.items[productId].productPrice}
+              imgUrl={cartState.items[productId].productImg}
             />
           ))}
         </Grid>
@@ -52,7 +47,7 @@ const Cart = () => {
               <Typography color="gray.600">Total:</Typography>
 
               <Typography fontSize="18px" fontWeight="600" lineHeight="1">
-                {currency(getTotalPrice())}
+                {currency(cartState.totalPrice)}
               </Typography>
             </FlexBox>
 

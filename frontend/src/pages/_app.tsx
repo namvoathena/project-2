@@ -7,7 +7,7 @@ import NProgress from "nprogress";
 import { ThemeProvider } from "styled-components";
 import GoogleAnalytics from "@component/GoogleAnalytics";
 import { AppProvider } from "@context/AppContext";
-import { AuthProvider } from "@context/AuthContext";
+// import { AuthProvider } from "@context/AuthContext";
 // import { GlobalStyles } from "@utils/globalStyles";
 // import { theme } from "@utils/theme";
 import "../__server__";
@@ -70,17 +70,17 @@ const App = ({ Component, pageProps }: MyAppProps) => {
               {/* Google analytics */}
               <GoogleAnalytics />
             </Head>
-            <AuthProvider>
-              <AppProvider>
-                <ThemeProvider theme={theme()}>
-                  <GlobalStyles />
+            {/* <AuthProvider> */}
+            <AppProvider>
+              <ThemeProvider theme={theme()}>
+                <GlobalStyles />
 
-                  <Layout>
-                    <Component {...pageProps} />
-                  </Layout>
-                </ThemeProvider>
-              </AppProvider>
-            </AuthProvider>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </ThemeProvider>
+            </AppProvider>
+            {/* </AuthProvider> */}
           </Fragment>
         </StoreProvider>
       </Client>

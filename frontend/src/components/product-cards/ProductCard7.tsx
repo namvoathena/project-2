@@ -2,7 +2,6 @@ import { FC } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import { space, SpaceProps } from "styled-system";
-import { useAppContext } from "@context/AppContext";
 import Box from "@component/Box";
 import Image from "@component/Image";
 import Icon from "@component/icon/Icon";
@@ -11,6 +10,12 @@ import { Button } from "@component/buttons";
 import Typography from "@component/Typography";
 import { IconButton } from "@component/buttons";
 import { currency, getTheme } from "@utils/utils";
+
+// Redux
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "store";
+import { updateCartItem } from "store/cart";
+import { CartItem } from "@models/cart.model";
 
 // styled component
 const Wrapper = styled.div`
@@ -57,12 +62,10 @@ interface ProductCard7Props extends SpaceProps {
 const ProductCard7: FC<ProductCard7Props> = (props) => {
   const { id, name, qty, price, imgUrl, slug, ...others } = props;
 
-  const { dispatch } = useAppContext();
-  const handleCartAmountChange = (amount: number) => () => {
-    dispatch({
-      type: "CHANGE_CART_AMOUNT",
-      payload: { qty: amount, name, price, imgUrl, id },
-    });
+  const dispatch: AppDispatch = useDispatch();
+
+  const handleCartAmountChange = (cartItem: CartItem) => () => {
+    dispatch(updateCartItem(cartItem));
   };
 
   return (
@@ -83,14 +86,30 @@ const ProductCard7: FC<ProductCard7Props> = (props) => {
       >
         <Link href={`/product/${slug}`}>
           <a>
-            <Typography className="title" fontWeight="600" fontSize="18px" mb="0.5rem">
+            <Typography
+              className="title"
+              fontWeight="600"
+              fontSize="18px"
+              mb="0.5rem"
+            >
               {name}
             </Typography>
           </a>
         </Link>
 
         <Box position="absolute" right="1rem" top="1rem">
-          <IconButton padding="4px" ml="12px" size="small" onClick={handleCartAmountChange(0)}>
+          <IconButton
+            padding="4px"
+            ml="12px"
+            size="small"
+            onClick={handleCartAmountChange({
+              productId: slug,
+              productImg: imgUrl,
+              productName: name,
+              productPrice: price,
+              productQuantity: 0,
+            })}
+          >
             <Icon size="1.25rem">close</Icon>
           </IconButton>
         </Box>
@@ -114,7 +133,13 @@ const ProductCard7: FC<ProductCard7Props> = (props) => {
               variant="outlined"
               disabled={qty === 1}
               borderColor="primary.light"
-              onClick={handleCartAmountChange(qty - 1)}
+              onClick={handleCartAmountChange({
+                productId: slug,
+                productImg: imgUrl,
+                productName: name,
+                productPrice: price,
+                productQuantity: qty - 1,
+              })}
             >
               <Icon variant="small">minus</Icon>
             </Button>
@@ -129,7 +154,13 @@ const ProductCard7: FC<ProductCard7Props> = (props) => {
               color="primary"
               variant="outlined"
               borderColor="primary.light"
-              onClick={handleCartAmountChange(qty + 1)}
+              onClick={handleCartAmountChange({
+                productId: slug,
+                productImg: imgUrl,
+                productName: name,
+                productPrice: price,
+                productQuantity: qty + 1,
+              })}
             >
               <Icon variant="small">plus</Icon>
             </Button>

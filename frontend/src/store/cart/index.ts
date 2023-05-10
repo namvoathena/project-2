@@ -1,7 +1,7 @@
 import Cart, { CartItem } from "@models/cart.model";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface CartState extends Cart {}
+export interface CartState extends Cart {}
 
 interface UpdateCartState {
   userId?: string;
@@ -42,48 +42,32 @@ export const CartSlice = createSlice({
     updateCart: (state, action: PayloadAction<UpdateCartState>) => {
       state = { ...state, ...action.payload };
     },
-    addCartItem: (state, action: PayloadAction<CartItem>) => {
-      const itemId = action.payload.productId;
-      if (!state.items[itemId]) {
-        state.items[itemId] = action.payload;
-        state.totalPrice =
-          state.totalPrice +
-          state.items[itemId].productPrice *
-            state.items[itemId].productQuantity;
-      }
-    },
-    updateCartItemQuantity: (
-      state,
-      action: PayloadAction<{ productId: string; productQuantity: number }>
-    ) => {
-      const itemId = action.payload.productId;
-      if (state.items[itemId]) {
+    updateCartItem: (state, action: PayloadAction<CartItem>) => {
+      const cartItem = action.payload;
+      const exist = state.items[cartItem.productId];
+      if (exist) {
         state.totalPrice -=
-          state.items[itemId].productPrice *
-          state.items[itemId].productQuantity;
-        state.items[itemId].productQuantity = action.payload.productQuantity;
+          state.items[cartItem.productId].productPrice *
+          state.items[cartItem.productId].productQuantity;
+        if (cartItem.productQuantity != 0) {
+          state.items[cartItem.productId].productQuantity =
+            cartItem.productQuantity;
+          state.totalPrice +=
+            state.items[cartItem.productId].productPrice *
+            state.items[cartItem.productId].productQuantity;
+        } else {
+          delete state.items[cartItem.productId];
+        }
+      } else if (cartItem.productQuantity != 0) {
+        state.items[cartItem.productId] = action.payload;
         state.totalPrice +=
-          state.items[itemId].productPrice *
-          state.items[itemId].productQuantity;
-      }
-    },
-    removeCartItem: (state, action: PayloadAction<{ productId: string }>) => {
-      const itemId = action.payload.productId;
-      if (state.items[itemId]) {
-        state.totalPrice -=
-          state.items[itemId].productPrice *
-          state.items[itemId].productQuantity;
-        delete state.items[itemId];
+          state.items[cartItem.productId].productPrice *
+          state.items[cartItem.productId].productQuantity;
       }
     },
   },
 });
 
-export const {
-  addCartItem,
-  updateCartItemQuantity,
-  removeCartItem,
-  updateCart,
-} = CartSlice.actions;
+export const { updateCartItem, updateCart } = CartSlice.actions;
 
 export default CartSlice.reducer;

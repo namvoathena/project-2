@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { FC, Fragment, useCallback, useState } from "react";
 import styled from "styled-components";
-import { useAppContext } from "@context/AppContext";
 import Box from "@component/Box";
 import Rating from "@component/rating";
 import { Chip } from "@component/Chip";
@@ -14,6 +13,12 @@ import { H3, SemiSpan } from "@component/Typography";
 import { calculateDiscount, currency, getTheme } from "@utils/utils";
 import { deviceSize } from "@utils/constants";
 import ProductQuickView from "@component/products/ProductQuickView";
+
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "store";
+import { CartState, updateCartItem } from "store/cart";
+import { CartItem } from "@models/cart.model";
 
 // styled component
 const Wrapper = styled(Card)`
@@ -124,17 +129,16 @@ const ProductCard1: FC<ProductCard1Props> = ({
   rating = 4,
   ...props
 }) => {
+  const cartState: CartState = useSelector((state: RootState) => state.cart);
+  const dispatch: AppDispatch = useDispatch();
+  const cartItem: CartItem = cartState.items[id];
+
   const [open, setOpen] = useState(false);
-  const { state, dispatch } = useAppContext();
-  const cartItem = state.cart.find((item) => item.id === id);
 
   const toggleDialog = useCallback(() => setOpen((open) => !open), []);
 
-  const handleCartAmountChange = (amount: number) => () => {
-    dispatch({
-      type: "CHANGE_CART_AMOUNT",
-      payload: { id, slug, price, imgUrl, name: title, qty: amount },
-    });
+  const handleCartAmountChange = (cartItem: CartItem) => {
+    dispatch(updateCartItem(cartItem));
   };
 
   return (
@@ -158,7 +162,12 @@ const ProductCard1: FC<ProductCard1Props> = ({
           )}
 
           <FlexBox className="extra-icons">
-            <Icon color="secondary" variant="small" mb="0.5rem" onClick={toggleDialog}>
+            <Icon
+              color="secondary"
+              variant="small"
+              mb="0.5rem"
+              onClick={toggleDialog}
+            >
               eye-alt
             </Icon>
 
@@ -219,7 +228,9 @@ const ProductCard1: FC<ProductCard1Props> = ({
               width="30px"
               alignItems="center"
               flexDirection="column-reverse"
-              justifyContent={!!cartItem?.qty ? "space-between" : "flex-start"}
+              justifyContent={
+                !!cartItem?.productQuantity ? "space-between" : "flex-start"
+              }
             >
               <Button
                 size="none"
@@ -227,15 +238,24 @@ const ProductCard1: FC<ProductCard1Props> = ({
                 color="primary"
                 variant="outlined"
                 borderColor="primary.light"
-                onClick={handleCartAmountChange((cartItem?.qty || 0) + 1)}
+                onClick={() => {
+                  const item: CartItem = {
+                    productId: slug,
+                    productImg: imgUrl,
+                    productName: title,
+                    productPrice: price,
+                    productQuantity: (cartItem?.productQuantity || 0) + 1,
+                  };
+                  handleCartAmountChange(item);
+                }}
               >
                 <Icon variant="small">plus</Icon>
               </Button>
 
-              {!!cartItem?.qty && (
+              {!!cartItem?.productQuantity && (
                 <Fragment>
                   <SemiSpan color="text.primary" fontWeight="600">
-                    {cartItem.qty}
+                    {cartItem.productQuantity}
                   </SemiSpan>
 
                   <Button
@@ -244,7 +264,16 @@ const ProductCard1: FC<ProductCard1Props> = ({
                     color="primary"
                     variant="outlined"
                     borderColor="primary.light"
-                    onClick={handleCartAmountChange(cartItem.qty - 1)}
+                    onClick={() => {
+                      const item: CartItem = {
+                        productId: slug,
+                        productImg: imgUrl,
+                        productName: title,
+                        productPrice: price,
+                        productQuantity: cartItem.productQuantity - 1,
+                      };
+                      handleCartAmountChange(item);
+                    }}
                   >
                     <Icon variant="small">minus</Icon>
                   </Button>

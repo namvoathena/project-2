@@ -23,6 +23,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "store";
 import { ProductFilterState } from "store/product-filter";
 import { ProductListState } from "store/product-list";
+import { CartState } from "store/cart";
 
 // ====================================================================
 type HeaderProps = { isFixed?: boolean; className?: string };
@@ -41,6 +42,8 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
   const productListSlice: ProductListState = useSelector(
     (state: RootState) => state.productList
   );
+
+  const cartSlice: CartState = useSelector((state: RootState) => state.cart);
 
   const handleCategoryChange = (categoryId: string) => {
     router.replace({
@@ -69,7 +72,7 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
         <Icon size="20px">bag</Icon>
       </IconButton>
 
-      {!!state.cart.length && (
+      {!!Object.keys(cartSlice.items).length && (
         <FlexBox
           top={-5}
           right={-5}
@@ -82,7 +85,7 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
           justifyContent="center"
         >
           <Tiny color="white" fontWeight="600" lineHeight={1}>
-            {state.cart.length}
+            {Object.keys(cartSlice.items).length}
           </Tiny>
         </FlexBox>
       )}
