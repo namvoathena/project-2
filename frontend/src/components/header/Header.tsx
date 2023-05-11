@@ -9,21 +9,20 @@ import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import MiniCart from "@component/mini-cart";
 import Container from "@component/Container";
-import { Tiny } from "@component/Typography";
+import Typography, { Tiny } from "@component/Typography";
 import Login from "@component/sessions/Login";
 import { IconButton } from "@component/buttons";
 import Sidenav from "@component/sidenav/Sidenav";
-import { SearchInputWithCategory } from "@component/search-box";
-import { useAppContext } from "@context/AppContext";
 import StyledHeader from "./styles";
 import UserLoginDialog from "./LoginDialog";
 
 // Redux:
 import { useSelector } from "react-redux";
 import { RootState } from "store";
-import { ProductFilterState } from "store/product-filter";
 import { ProductListState } from "store/product-list";
 import { CartState } from "store/cart";
+import { SearchInput } from "@component/search-box";
+import { useAuth } from "@hook/useAuth";
 
 // ====================================================================
 type HeaderProps = { isFixed?: boolean; className?: string };
@@ -31,13 +30,9 @@ type HeaderProps = { isFixed?: boolean; className?: string };
 
 const Header: FC<HeaderProps> = ({ isFixed, className }) => {
   const router = useRouter();
-  const { state } = useAppContext();
+  const auth = useAuth();
   const [open, setOpen] = useState(false);
   const toggleSidenav = () => setOpen(!open);
-
-  const productFilterSlice: ProductFilterState = useSelector(
-    (state: RootState) => state.productFilter
-  );
 
   const productListSlice: ProductListState = useSelector(
     (state: RootState) => state.productList
@@ -45,23 +40,23 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
 
   const cartSlice: CartState = useSelector((state: RootState) => state.cart);
 
-  const handleCategoryChange = (categoryId: string) => {
-    router.replace({
-      pathname: "/",
-      query: {
-        page: productListSlice.query.page,
-        limit: productListSlice.query.limit,
-        category: categoryId,
-      },
-    });
-  };
-
   const handleSearchChange = (queryString: string) => {
+    const queryParams: any = {};
+    Object.keys(productListSlice.query).forEach((key) => {
+      if (productListSlice.query[key]) {
+        queryParams[key] = productListSlice.query[key];
+      }
+    });
+    if (queryString) {
+      queryParams.search = queryString;
+    } else {
+      delete queryParams.search;
+    }
     router.replace({
       pathname: "/",
       query: {
-        ...productListSlice.query,
-        search: queryString,
+        ...queryParams,
+        page: 1,
       },
     });
   };
@@ -98,11 +93,8 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
     </IconButton>
   );
 
-  if (
-    (router.pathname == "/" && !productFilterSlice.data) ||
-    !productListSlice.data
-  ) {
-    return <div>Loading...</div>;
+  if (router.pathname == "/" && !productListSlice.data) {
+    return <div></div>;
   }
 
   return (
@@ -127,23 +119,17 @@ const Header: FC<HeaderProps> = ({ isFixed, className }) => {
         </FlexBox>
 
         <FlexBox justifyContent="center" flex="1 1 0">
-          <SearchInputWithCategory
-            categories={productFilterSlice.data.category_options}
-            chosen_category_id={
-              productListSlice.query.category
-                ? productListSlice.query.category
-                : ""
-            }
-            onCategoryChange={handleCategoryChange}
-            onSearchChange={handleSearchChange}
-          />
+          <SearchInput onSearchChange={handleSearchChange} />
         </FlexBox>
 
         <FlexBox className="header-right" alignItems="center">
-          <UserLoginDialog handle={LOGIN_HANDLE}>
-            <Login />
-          </UserLoginDialog>
-
+          {auth.user ? (
+            <Typography>{`Hello, ${auth.user.name}!`}</Typography>
+          ) : (
+            <UserLoginDialog handle={LOGIN_HANDLE}>
+              <Login />
+            </UserLoginDialog>
+          )}
           <Sidenav
             open={open}
             width={380}

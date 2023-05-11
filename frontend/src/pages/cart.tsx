@@ -66,7 +66,12 @@ const Cart = () => {
             </Button>
 
             <Link href="/checkout">
-              <Button variant="contained" color="primary" fullwidth>
+              <Button
+                disabled={Object.keys(cartState.items).length == 0}
+                variant="contained"
+                color="primary"
+                fullwidth
+              >
                 Checkout Now
               </Button>
             </Link>

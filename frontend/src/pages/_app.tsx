@@ -7,7 +7,7 @@ import NProgress from "nprogress";
 import { ThemeProvider } from "styled-components";
 import GoogleAnalytics from "@component/GoogleAnalytics";
 import { AppProvider } from "@context/AppContext";
-// import { AuthProvider } from "@context/AuthContext";
+import { AuthProvider } from "@context/AuthContext";
 // import { GlobalStyles } from "@utils/globalStyles";
 // import { theme } from "@utils/theme";
 import "../__server__";
@@ -66,38 +66,23 @@ const App = ({ Component, pageProps }: MyAppProps) => {
                 property="og:image"
                 content="/assets/images/landing/preview.png"
               />
-
-              {/* Google analytics */}
               <GoogleAnalytics />
             </Head>
-            {/* <AuthProvider> */}
-            <AppProvider>
-              <ThemeProvider theme={theme()}>
-                <GlobalStyles />
-
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              </ThemeProvider>
-            </AppProvider>
-            {/* </AuthProvider> */}
+            <AuthProvider>
+              <AppProvider>
+                <ThemeProvider theme={theme()}>
+                  <GlobalStyles />
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                </ThemeProvider>
+              </AppProvider>
+            </AuthProvider>
           </Fragment>
         </StoreProvider>
       </Client>
     </HydrationProvider>
   );
 };
-
-// Only uncomment this method if you have blocking data requirements for
-// every single page in your application. This disables the ability to
-// perform automatic static optimization, causing every page in your app to
-// be server-side rendered.
-//
-// App.getInitialProps = async (appContext) => {
-//   // calls page's `getInitialProps` and fills `appProps.pageProps`
-//   const appProps = await App.getInitialProps(appContext);
-//
-//   return { ...appProps }
-// }
 
 export default App;

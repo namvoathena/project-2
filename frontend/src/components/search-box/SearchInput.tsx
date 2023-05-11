@@ -1,36 +1,22 @@
-import { FC, useCallback, useEffect, useState } from "react";
-import Link from "next/link";
-import { debounce } from "lodash";
+import { FC, useState } from "react";
 import Box from "../Box";
-import Card from "../Card";
 import Icon from "../icon/Icon";
-import MenuItem from "../MenuItem";
 import { Button } from "../buttons";
-import { Span } from "../Typography";
 import TextField from "../text-field";
 import SearchBoxStyle from "./styled";
 
-const SearchInput: FC = () => {
-  const [resultList, setResultList] = useState([]);
+type Props = {
+  onSearchChange: (queryString: string) => void;
+};
 
-  const search = debounce((e) => {
-    const value = e.target?.value;
+const CustomSearchInput: FC<Props> = ({ onSearchChange }) => {
+  const [searchValue, setSearchValue] = useState<string>("");
 
-    if (!value) setResultList([]);
-    else setResultList(dummySearchResult);
-  }, 200);
-
-  const hanldeSearch = useCallback((event) => {
-    event.persist();
-    search(event);
-  }, []);
-
-  const handleDocumentClick = () => setResultList([]);
-
-  useEffect(() => {
-    window.addEventListener("click", handleDocumentClick);
-    return () => window.removeEventListener("click", handleDocumentClick);
-  }, []);
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      onSearchChange(searchValue);
+    }
+  };
 
   return (
     <Box position="relative" flex="1 1 0" maxWidth="670px" mx="auto">
@@ -41,35 +27,24 @@ const SearchInput: FC = () => {
 
         <TextField
           fullwidth
-          onChange={hanldeSearch}
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
           className="search-field"
           placeholder="Search and hit enter..."
+          onKeyDown={handleKeyPress}
         />
 
-        <Button className="search-button" variant="contained" color="primary">
+        <Button
+          className="search-button"
+          variant="contained"
+          color="primary"
+          onClick={() => onSearchChange(searchValue)}
+        >
           Search
         </Button>
-
-        <Box className="menu-button" ml="14px" cursor="pointer">
-          <Icon color="primary">menu</Icon>
-        </Box>
       </SearchBoxStyle>
-
-      {!!resultList.length && (
-        <Card position="absolute" top="100%" py="0.5rem" width="100%" boxShadow="large" zIndex={99}>
-          {resultList.map((item) => (
-            <Link href={`/product/search/${item}`} key={item}>
-              <MenuItem key={item}>
-                <Span fontSize="14px">{item}</Span>
-              </MenuItem>
-            </Link>
-          ))}
-        </Card>
-      )}
     </Box>
   );
 };
 
-const dummySearchResult = ["Macbook Air 13", "Ksus K555LA", "Acer Aspire X453", "iPad Mini 3"];
-
-export default SearchInput;
+export default CustomSearchInput;

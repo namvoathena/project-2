@@ -1,53 +1,43 @@
 import axiosClient from "./axiosClient";
 import { SignInUser, SignUpUser } from "@models/user.model";
 
-export const signInAsStandard = async (
+export const signInAsCustomer = async (
   params: SignInUser,
-  callback: any,
   errorCallback: any
 ) => {
   try {
-    const res = await axiosClient.post("/signin", params);
-    callback(res.data);
+    const res = await axiosClient.post("/auth/signin", params);
+    return res.data;
   } catch (err) {
     errorCallback ? errorCallback(err) : null;
   }
 };
 
-export const signUpAsStandard = async (
+export const signUpAsCustomer = async (
   params: SignUpUser,
-  callback: any,
   errorCallback: any
 ) => {
   try {
-    const res = await axiosClient.post("/signup", params);
-    callback(res.data);
+    const res = await axiosClient.post("/auth/signup", params);
+    return res.data;
   } catch (err) {
     errorCallback ? errorCallback(err) : null;
   }
 };
 
-export const signInAsAdmin = async (
-  params: SignInUser,
-  callback: any,
-  errorCallback: any
-) => {
+export const signInAsAdmin = async (params: SignInUser, errorCallback: any) => {
   try {
-    const res = await axiosClient.post("/admin/signin", params);
-    callback(res.data);
+    const res = await axiosClient.post("/auth/admin/signin", params);
+    return res.data;
   } catch (err) {
     errorCallback ? errorCallback(err) : null;
   }
 };
 
-export const signUpAsAdmin = async (
-  params: SignUpUser,
-  callback: any,
-  errorCallback: any
-) => {
+export const signUpAsAdmin = async (params: SignUpUser, errorCallback: any) => {
   try {
-    const res = await axiosClient.post("/admin/signup", params);
-    callback(res.data);
+    const res = await axiosClient.post("/auth/admin/signup", params);
+    return res.data;
   } catch (err) {
     errorCallback ? errorCallback(err) : null;
   }

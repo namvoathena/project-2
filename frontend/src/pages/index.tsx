@@ -78,33 +78,55 @@ const ProductSearchResult = ({ productList, getParams }: Props) => {
   }, [productList, getParams]);
 
   const handlePageChange = (page: number) => {
+    const queryParams: any = {};
+    Object.keys(productListSlice.query).forEach((key) => {
+      if (productListSlice.query[key]) {
+        queryParams[key] = productListSlice.query[key];
+      }
+    });
+    if (page) {
+      queryParams.page = page;
+    } else {
+      delete queryParams.page;
+    }
     router.replace({
       pathname: "/",
-      query: {
-        ...productListSlice.query,
-        page,
-      },
+      query: { ...queryParams },
     });
   };
 
   const handleSortChange = (sortOption: string) => {
+    const queryParams: any = {};
+    Object.keys(productListSlice.query).forEach((key) => {
+      if (productListSlice.query[key]) {
+        queryParams[key] = productListSlice.query[key];
+      }
+    });
+    if (sortOption) {
+      queryParams.sort = sortOption;
+    } else {
+      delete queryParams.sort;
+    }
     router.replace({
       pathname: "/",
       query: {
-        ...productListSlice.query,
-        sort: sortOption,
+        ...queryParams,
+        page: 1,
       },
     });
   };
 
   const handleCategoryChange = (categoryId: string) => {
+    const queryParams: any = {
+      page: 1,
+      limit: productListSlice.query.limit,
+    };
+    if (categoryId) {
+      queryParams.category = categoryId;
+    }
     router.replace({
       pathname: "/",
-      query: {
-        page: productListSlice.query.page,
-        limit: productListSlice.query.limit,
-        category: categoryId,
-      },
+      query: queryParams,
     });
   };
 
@@ -112,41 +134,85 @@ const ProductSearchResult = ({ productList, getParams }: Props) => {
     minPrice: number;
     maxPrice: number;
   }) => {
+    const queryParams: any = {};
+    Object.keys(productListSlice.query).forEach((key) => {
+      if (productListSlice.query[key]) {
+        queryParams[key] = productListSlice.query[key];
+      }
+    });
+    if (priceRange) {
+      queryParams.price = `${priceRange.minPrice},${priceRange.maxPrice}`;
+    } else {
+      delete queryParams.price;
+    }
     router.replace({
       pathname: "/",
       query: {
-        ...productListSlice.query,
-        price: `${priceRange.minPrice},${priceRange.maxPrice}`,
+        ...queryParams,
+        page: 1,
       },
     });
   };
 
   const handleBrandChange = (brands: string) => {
+    const queryParams: any = {};
+    Object.keys(productListSlice.query).forEach((key) => {
+      if (productListSlice.query[key]) {
+        queryParams[key] = productListSlice.query[key];
+      }
+    });
+    if (brands) {
+      queryParams.brand = brands;
+    } else {
+      delete queryParams.brand;
+    }
     router.replace({
       pathname: "/",
       query: {
-        ...productListSlice.query,
-        brand: brands,
+        ...queryParams,
+        page: 1,
       },
     });
   };
 
   const handleSellerChange = (sellers: string) => {
+    const queryParams: any = {};
+    Object.keys(productListSlice.query).forEach((key) => {
+      if (productListSlice.query[key]) {
+        queryParams[key] = productListSlice.query[key];
+      }
+    });
+    if (sellers) {
+      queryParams.seller = sellers;
+    } else {
+      delete queryParams.seller;
+    }
     router.replace({
       pathname: "/",
       query: {
-        ...productListSlice.query,
-        seller: sellers,
+        ...queryParams,
+        page: 1,
       },
     });
   };
 
   const handleColorChange = (colors: string) => {
+    const queryParams: any = {};
+    Object.keys(productListSlice.query).forEach((key) => {
+      if (productListSlice.query[key]) {
+        queryParams[key] = productListSlice.query[key];
+      }
+    });
+    if (colors) {
+      queryParams.color = colors;
+    } else {
+      delete queryParams.color;
+    }
     router.replace({
       pathname: "/",
       query: {
-        ...productListSlice.query,
-        color: colors,
+        ...queryParams,
+        page: 1,
       },
     });
   };

@@ -79,7 +79,7 @@ const DashboardNavigation = () => {
 
 const linkList = [
   {
-    title: "DASHBOARD",
+    title: "OVERVIEW",
     list: [{ href: "/orders", title: "Orders", iconName: "bag" }],
   },
 ];

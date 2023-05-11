@@ -4,7 +4,7 @@ import Hidden from "@component/hidden";
 import Grid from "@component/grid/Grid";
 import Container from "@component/Container";
 import Navbar from "@component/navbar/Navbar";
-import DashboardNavigation from "../DashboardNavigation";
+import DashboardNavigation from "./DashboardNavigation";
 
 // ======================================================
 type Props = { children: ReactNode };

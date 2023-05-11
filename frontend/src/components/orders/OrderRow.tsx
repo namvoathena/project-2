@@ -40,7 +40,9 @@ const OrderRow: FC<OrderRowProps> = ({ order }) => {
 
         <Box m="6px">
           <Chip p="0.25rem 1rem" bg={`${getColor(order.status)}.light`}>
-            <Small color={`${getColor(order.status)}.main`}>{order.status}</Small>
+            <Small color={`${getColor(order.status)}.main`}>
+              {order.status}
+            </Small>
           </Chip>
         </Box>
 
