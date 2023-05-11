@@ -155,6 +155,8 @@ class ProductService:
 
     def get(self, params):
         product = self.collection.find_one({"_id": ObjectId(params["product_id"])})
+        if not product:
+            raise Exception("Product not found!")
         product["_id"] = str(product["_id"])
         return product
 

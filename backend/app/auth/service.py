@@ -74,7 +74,7 @@ class AuthService:
             "username": user["username"],
             "role": user["role"],
         }
-        access_token = create_access_token(identity)
+        access_token = create_access_token(identity, expires_delta=False)
         return {
             "id": user["id"],
             "username": user["username"],

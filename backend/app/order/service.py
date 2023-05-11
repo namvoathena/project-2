@@ -23,7 +23,7 @@ class OrderService:
         else:
             get_params["limit"] = int(params["limit"])
 
-        if params["user"]:
+        if params["user_id"]:
             get_params["user_id"] = params["user_id"]
 
         if err_msg:
@@ -52,7 +52,7 @@ class OrderService:
             "items": params["items"] if "items" in params else None,
         }
         for field in order_data:
-            if not order_data[field]:
+            if order_data[field] == None:
                 err += f"{field} field must be provided. "
 
         # if order_data["items"]:

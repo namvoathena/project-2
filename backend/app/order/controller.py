@@ -4,19 +4,51 @@ from utils.constants import MIN_PAGE, MIN_PAGE_SIZE
 
 from flask import request, jsonify
 
-# from flask_jwt_extended import (
-#     get_jwt_identity,
-#     jwt_required,
-# )
+from flask_jwt_extended import (
+    get_jwt_identity,
+    jwt_required,
+)
 
 from .service import OrderService
+
+
+@app.route("/order/info/me", methods=["GET"])
+@jwt_required()
+def get_my_order_list():
+    try:
+        identity = get_jwt_identity()
+        orderService = OrderService()
+        params = {
+            "page": request.args.get("page", str(MIN_PAGE), type=str),
+            "limit": request.args.get("limit", str(MIN_PAGE_SIZE), type=str),
+            "user_id": identity["id"],
+        }
+        get_params = orderService.validate_get_params(params)
+        result = orderService.get_list(get_params)
+        return (
+            jsonify(
+                {
+                    "status_code": 200,
+                    "data": result[0],
+                    "pagination": result[1],
+                }
+            ),
+            200,
+        )
+    except Exception as e:
+        logging.exception(e)
+        return (
+            jsonify(
+                {"status_code": 404, "msg": "Get-my-order-list failed!", "data": []}
+            ),
+            404,
+        )
 
 
 @app.route("/order", methods=["GET"])
 def get_order_list():
     try:
         orderService = OrderService()
-        params = orderService.validate_get_params(request.args)
         params = {
             "page": request.args.get("page", str(MIN_PAGE), type=str),
             "limit": request.args.get("limit", str(MIN_PAGE_SIZE), type=str),

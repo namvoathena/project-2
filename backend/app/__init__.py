@@ -26,6 +26,7 @@ load_dotenv()
 from home.controller import *
 from product.controller import *
 from auth.controller import *
+from user.controller import *
 from product_filter.controller import *
 from voucher.controller import *
 from order.controller import *
