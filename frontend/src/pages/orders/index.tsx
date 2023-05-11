@@ -5,7 +5,7 @@ import TableRow from "@component/TableRow";
 import { H5 } from "@component/Typography";
 // import Pagination from "@component/pagination";
 import OrderRow from "@component/orders/OrderRow";
-import DashboardPageHeader from "@component/layout/DashboardPageHeader";
+import DashboardPageHeader from "@component/layout/customer-dashboard/DashboardPageHeader";
 import CustomerDashboardLayout from "@component/layout/customer-dashboard";
 import { useAuth } from "@hook/useAuth";
 import { AuthGuard } from "@component/sessions/AuthGuard";

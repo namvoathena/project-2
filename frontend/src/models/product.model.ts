@@ -47,6 +47,7 @@ export interface Product {
   short_description: string;
   sku: string;
   specifications: Array<ProductSpecification>;
+  thumbnail_url: string;
 }
 
 export interface GetQueryProduct {

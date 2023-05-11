@@ -10,8 +10,13 @@ import Icon from "@component/icon/Icon";
 import FlexBox from "@component/FlexBox";
 import { Button } from "@component/buttons";
 import { H1, H2, H3, H6, SemiSpan } from "@component/Typography";
-import { useAppContext } from "@context/AppContext";
 import { currency } from "@utils/utils";
+
+// Redux
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "store";
+import { CartState, updateCartItem } from "store/cart";
+import { CartItem } from "@models/cart.model";
 
 // ========================================
 type ProductIntroProps = {
@@ -19,24 +24,31 @@ type ProductIntroProps = {
   title: string;
   images: string[];
   id: string | number;
+  slug: string;
+  thumbnailUrl: string;
 };
 // ========================================
 
-const ProductIntro: FC<ProductIntroProps> = ({ images, title, price, id }) => {
+const ProductIntro: FC<ProductIntroProps> = ({
+  images,
+  title,
+  price,
+  id,
+  slug,
+  thumbnailUrl,
+}) => {
   const router = useRouter();
-  const { state, dispatch } = useAppContext();
+  const cartState: CartState = useSelector((state: RootState) => state.cart);
+  const dispatch: AppDispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(0);
 
   const routerId = router.query.id as string;
-  const cartItem = state.cart.find((item) => item.id === id || item.id === routerId);
+  const cartItem: CartItem = cartState.items[id || routerId];
 
   const handleImageClick = (ind: number) => () => setSelectedImage(ind);
 
-  const handleCartAmountChange = (amount: number) => () => {
-    dispatch({
-      type: "CHANGE_CART_AMOUNT",
-      payload: { price, qty: amount, name: title, imgUrl: images[0], id: id || routerId },
-    });
+  const handleCartAmountChange = (cartItem: CartItem) => {
+    dispatch(updateCartItem(cartItem));
   };
 
   return (
@@ -68,7 +80,9 @@ const ProductIntro: FC<ProductIntroProps> = ({ images, title, price, id }) => {
                   justifyContent="center"
                   ml={ind === 0 && "auto"}
                   mr={ind === images.length - 1 ? "auto" : "10px"}
-                  borderColor={selectedImage === ind ? "primary.main" : "gray.400"}
+                  borderColor={
+                    selectedImage === ind ? "primary.main" : "gray.400"
+                  }
                   onClick={handleImageClick(ind)}
                 >
                   <Avatar src={url} borderRadius="10px" size={40} />
@@ -102,13 +116,22 @@ const ProductIntro: FC<ProductIntroProps> = ({ images, title, price, id }) => {
             <SemiSpan color="inherit">Stock Available</SemiSpan>
           </Box>
 
-          {!cartItem?.qty ? (
+          {!cartItem?.productQuantity ? (
             <Button
               mb="36px"
               size="small"
               color="primary"
               variant="contained"
-              onClick={handleCartAmountChange(1)}
+              onClick={() => {
+                const item: CartItem = {
+                  productId: slug || routerId,
+                  productImg: thumbnailUrl,
+                  productName: title,
+                  productPrice: price,
+                  productQuantity: 1,
+                };
+                handleCartAmountChange(item);
+              }}
             >
               Add to Cart
             </Button>
@@ -119,13 +142,22 @@ const ProductIntro: FC<ProductIntroProps> = ({ images, title, price, id }) => {
                 size="small"
                 color="primary"
                 variant="outlined"
-                onClick={handleCartAmountChange(cartItem?.qty - 1)}
+                onClick={() => {
+                  const item: CartItem = {
+                    productId: slug || routerId,
+                    productImg: thumbnailUrl,
+                    productName: title,
+                    productPrice: price,
+                    productQuantity: cartItem?.productQuantity - 1,
+                  };
+                  handleCartAmountChange(item);
+                }}
               >
                 <Icon variant="small">minus</Icon>
               </Button>
 
               <H3 fontWeight="600" mx="20px">
-                {cartItem?.qty.toString().padStart(2, "0")}
+                {cartItem?.productQuantity.toString().padStart(2, "0")}
               </H3>
 
               <Button
@@ -133,7 +165,16 @@ const ProductIntro: FC<ProductIntroProps> = ({ images, title, price, id }) => {
                 size="small"
                 color="primary"
                 variant="outlined"
-                onClick={handleCartAmountChange(cartItem?.qty + 1)}
+                onClick={() => {
+                  const item: CartItem = {
+                    productId: slug || routerId,
+                    productImg: thumbnailUrl,
+                    productName: title,
+                    productPrice: price,
+                    productQuantity: cartItem?.productQuantity + 1,
+                  };
+                  handleCartAmountChange(item);
+                }}
               >
                 <Icon variant="small">plus</Icon>
               </Button>

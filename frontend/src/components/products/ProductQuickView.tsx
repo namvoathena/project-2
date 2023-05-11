@@ -15,6 +15,7 @@ type Props = {
     price: number;
     images: string[];
     id: string | number;
+    thumbnailUrl: string;
   };
 };
 // ===================================================
@@ -27,13 +28,19 @@ const ProductQuickView: FC<Props> = (props) => {
       <Card p="1rem" position="relative" maxWidth="800px" width="100%">
         <ProductIntro
           id={product.id}
+          slug={product.slug}
           title={product.title}
           price={product.price}
           images={product.images}
+          thumbnailUrl={product.thumbnailUrl}
         />
-
         <Box position="absolute" top="0.75rem" right="0.75rem" cursor="pointer">
-          <Icon className="close" color="primary" variant="small" onClick={onClose}>
+          <Icon
+            className="close"
+            color="primary"
+            variant="small"
+            onClick={onClose}
+          >
             close
           </Icon>
         </Box>

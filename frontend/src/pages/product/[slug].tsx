@@ -35,6 +35,8 @@ const ProductDetails = (props: Props) => {
     <Fragment>
       <ProductIntro
         id={product._id}
+        slug={product._id}
+        thumbnailUrl={product.thumbnail_url}
         price={product.price}
         title={product.name}
         images={product.images.map((image) => {

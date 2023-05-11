@@ -3,10 +3,12 @@ import styled from "styled-components";
 import { Chip } from "@component/Chip";
 import Icon from "@component/icon/Icon";
 import NavLink from "@component/nav-link";
-import { useAppContext } from "@context/AppContext";
 import useWindowSize from "@hook/useWindowSize";
 import { layoutConstant } from "@utils/constants";
 import { getTheme } from "@utils/utils";
+import { CartState } from "store/cart";
+import { useSelector } from "react-redux";
+import { RootState } from "store";
 
 // styled component
 const Wrapper = styled.div`
@@ -45,7 +47,7 @@ const Wrapper = styled.div`
 
 const MobileNavigationBar: FC = () => {
   const width = useWindowSize();
-  const { state } = useAppContext();
+  const cartState: CartState = useSelector((state: RootState) => state.cart);
 
   return (
     width <= 900 && (
@@ -58,7 +60,7 @@ const MobileNavigationBar: FC = () => {
 
             {item.title}
 
-            {item.title === "Cart" && !!state.cart.length && (
+            {item.title === "Cart" && !!Object.keys(cartState.items).length && (
               <Chip
                 top="4px"
                 px="0.25rem"
@@ -68,7 +70,7 @@ const MobileNavigationBar: FC = () => {
                 color="primary.text"
                 left="calc(50% + 8px)"
               >
-                {state.cart.length}
+                {Object.keys(cartState.items).length}
               </Chip>
             )}
           </NavLink>

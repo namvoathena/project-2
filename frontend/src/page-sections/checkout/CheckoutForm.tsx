@@ -9,7 +9,7 @@ import { Button } from "@component/buttons";
 import TextField from "@component/text-field";
 import Typography from "@component/Typography";
 import { CartState } from "store/cart";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useAuth } from "@hook/useAuth";
 import { RootState } from "store";
 import { createOrder } from "api/order";

@@ -287,7 +287,7 @@ const ProductCard1: FC<ProductCard1Props> = ({
       <ProductQuickView
         open={open}
         onClose={toggleDialog}
-        product={{ images, title, price, id, slug }}
+        product={{ images, title, price, id, slug, thumbnailUrl: imgUrl }}
       />
     </>
   );

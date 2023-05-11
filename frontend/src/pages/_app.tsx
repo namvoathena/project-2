@@ -5,12 +5,7 @@ import Router from "next/router";
 import { AppProps } from "next/app";
 import NProgress from "nprogress";
 import { ThemeProvider } from "styled-components";
-import GoogleAnalytics from "@component/GoogleAnalytics";
-import { AppProvider } from "@context/AppContext";
 import { AuthProvider } from "@context/AuthContext";
-// import { GlobalStyles } from "@utils/globalStyles";
-// import { theme } from "@utils/theme";
-import "../__server__";
 import theme from "../theme";
 import GlobalStyles from "theme/globalStyles";
 import { HydrationProvider, Client } from "react-hydration-provider";
@@ -62,21 +57,14 @@ const App = ({ Component, pageProps }: MyAppProps) => {
                 property="og:description"
                 content="Minimal, clean and Fast Next js ecommerce template. Build Super store, Grocery delivery app, Multivendor store and niche market"
               />
-              <meta
-                property="og:image"
-                content="/assets/images/landing/preview.png"
-              />
-              <GoogleAnalytics />
             </Head>
             <AuthProvider>
-              <AppProvider>
-                <ThemeProvider theme={theme()}>
-                  <GlobalStyles />
-                  <Layout>
-                    <Component {...pageProps} />
-                  </Layout>
-                </ThemeProvider>
-              </AppProvider>
+              <ThemeProvider theme={theme()}>
+                <GlobalStyles />
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </ThemeProvider>
             </AuthProvider>
           </Fragment>
         </StoreProvider>
