@@ -45,7 +45,7 @@ const App = ({ Component, pageProps }: MyAppProps) => {
               />
               <meta
                 property="og:url"
-                content="https://bonik-react.vercel.app"
+                content="https://athena-ecommerce-react.vercel.app"
               />
               {/* thumbnail And title for social media */}
               <meta property="og:type" content="website" />
@@ -55,7 +55,7 @@ const App = ({ Component, pageProps }: MyAppProps) => {
               />
               <meta
                 property="og:description"
-                content="Minimal, clean and Fast Next js ecommerce template. Build Super store, Grocery delivery app, Multivendor store and niche market"
+                content="Minimal, clean and Fast Next js ecommerce website."
               />
             </Head>
             <AuthProvider>
